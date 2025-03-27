@@ -1,0 +1,29 @@
+{
+  "name": "javascript_youtube",
+  "version": "1.0.0",
+  "description": "javascript로 youtube 클론코딩 (풀스택)",
+  "homepage": "https://github.com/Wholesome-Gee/javascript_youtube#readme",
+  "bugs": {
+    "url": "https://github.com/Wholesome-Gee/javascript_youtube/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wholesome-Gee/javascript_youtube.git"
+  },
+  "license": "ISC",
+  "author": "Wholesome-Gee",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec babel-node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/node": "^7.26.0",
+    "@babel/preset-env": "^7.26.9",
+    "nodemon": "^3.1.9"
+  }
+}
