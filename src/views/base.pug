@@ -1,0 +1,19 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet" href="https://unpkg.com/mvp.css")
+    title #{pageTitle} | Geetube
+  body 
+    //- main은 mvp css 기능으로 나중에 삭제
+    header
+      if fakeUser.username  
+        small Hello #{fakeUser.username}
+      else 
+        small Please login first
+      h1=pageTitle
+    main 
+      block contents
+        
+  include parts/footer
