@@ -190,6 +190,7 @@
   - 미들웨어에서 받은 변수 사용방법 
     - 1. title=pageTitle
     - 2. title #{pageTitle}에 오신것을 환영합니다. (변수+텍스트 조합)
+    - 3. 태그의 속성에서 #{}를 사용할땐 백틱기호를 붙혀야한다.
 - pug에서 조건문 사용하기 (#5.7 참고)
   ```js
   if pageTitle==='GEETUBE'
@@ -266,6 +267,195 @@ mixin video(video)
       li Posted #{video.createdAt}
       li #{video.views} views.
 ```
-
-
 - mvp.css라는걸 사용하면 html코드를 작성하는 중에 기본 스타일보단 조금 더 나은 스타일을 적용할 수 있다. (CSS의 임시방편)
+  - `<link rel="stylesheet" href="https://unpkg.com/mvp.css">` 이걸 html head에 붙혀넣기
+---
+## #6 MongoDB and Mongoose ⭐
+### 6.0 ~ 6.28 ✏️
+**✔️ 상대경로와 절대경로**
+  ```js
+  // 현재경로 localhost:4000/video/1
+  <a href="/edit">링크</a> // localhost:4000/edit
+  <a href="edit">링크</a> // localhost:4000/video/edit
+  <a href="1/edit">링크</a> // localhost:4000/video/1/edit
+  ```
+**✔️ 서버로 post 요청 보내기**
+  - post 라우터 등록 → 미들웨어 생성
+  - res.redirect('url') url로 유저를 돌려보냄
+  - form태그를 사용해 서버로 post 요청을 보낸 데이터를 확인하는 방법 (form 내 input에는 name속성이 필수)
+    - src/index.js(src/server.js)에서 `app.use(express.urlencoded({ extended: true }));` 추가
+      - express가 post 미들웨어의 req.body를 읽을 수 있도록 설정하는 작업으로 다른 app.use('router경로')보다 우선작성되어야함
+    - src/routers에 post 라우터 등록 
+      - `app.post('url',콜백함수)
+    - src/controllers에 post 미들웨어 생성
+    ```javascript
+    // form태그에서 localhost:4000/video/123456/edit로 post요청했다고 가정.
+    // stc/index.js
+    app.use(express.urlencoded({extended: true}));
+    app.use('/videos',videoRouter)
+    
+    // src/routers/videoRouter.js
+    globalRouter.post('/:(\\d+)/edit',postEditVideo);
+  
+    // src/controllers/videoController.js
+    export const postEditVideo = (req, res) => {
+      console.log(req.body)
+      res.redirect('/videos')
+    }
+    ```
+**✔️ mongoDB 설치하기**
+- chocolatey 설치
+- powershell 관리자모드 실행 후 `choco install mongodb` (이후 a+enter로 빠른설치)
+- powershell 관리자모드에서 `choco install mongosh` (이후 a+enter로 빠른설치) 
+- powershell에 `mongosh` 입력 후 Connecting to: 다음에 나오는 `mongodb://db주소/` 까지 복사
+- 프로젝트 콘솔에 `npm i mongoose`
+- src/db.js 생성
+  ```js
+  import mongoose from 'mongoose';
+  // mongoose에게 mongoDB 좌표 찍어주기
+  mongoose.connect('mongodb://127.0.0.1:27017/geetube')
+  // mongoose로 mongoDB 연결
+  const db = mongoose.connection;
+  function handleError(error){
+    console.log("❌ DB Error: "+error);
+  }
+  function handleConnected(){
+    console.log('✅ Connected to DB');
+  }
+  // 연결 시 event
+  db.on('error', handleError); // db 접속 에러시 event
+  db.once('open', handleConnected) // db 연결 성공 시 event
+  ```
+- src/index.js(src/server.js)에 `import './db.js'`
+- mongo cli
+  - `mongosh` → db 켜기
+    - `help` → 도움말
+    - `show dbs/collections` → db/collection 보기
+    - `use dbs/collections` → db/collection 접속
+      - `db.collectionName.find() → document(data) 조회
+      - `db.collectionName.deleteMany({}) → document(data) 삭제
+  - `quit` → db 끄기
+
+**✔️ data의 Schema 정의하기**
+- src/models/스키마이름.js 생성
+  ```js
+  import mongoose from "mongoose";
+
+  const videoSchema = new mongoose.Schema({
+    title: { type: String, required: true, trim: true, maxLength: 80 },
+    description: { type: String, required: true, trim: true, minLength: 5 },
+    createdAt: { type: Date, default: Date.now } // Date.now() 아님 Date.now임..
+    hashtags:[{ type:String, trim: true }], 
+    meta: {
+      views: { type: Number, default: 0 },
+      rating: { type: Number, default: 0 },
+    }
+  })
+
+  const Video = mongoose.model("Video", videoSchema);
+  export default Video;
+  ```
+- src/controllers/OOOController.js에서 스키마 import
+- src/controllers/OOOController.js에서 mongoose Queries를 활용
+- https://mongoosejs.com/docs/schematypes.html 스키마 타입에 대한 문서 
+  ```js
+  // src/controllers/videoController.js
+  import Video from "../models/Video";
+
+  export const getHomeVideo = async (req, res) => {
+    try {
+      const videos = await Video.find({}) // Video.exists, Video.findById, Video.findByIdAndUpdate 등 다양한 스키마 함수들이 있다.
+      res.render('home', { pageTitle:'Home',videos });
+    } catch (err) {
+      return res.render(err.message)
+    }
+  }
+  export const postUploadVideo = async (req, res) => {
+    const { title, description, hashtags } = req.body;
+    try {
+      /*
+      const newVideo = Video({
+        title,
+        description,
+        createdAt: Date.now(),
+        hashtags:hashtags.split(',').map(item=>`#${item}`),
+        meta: {
+          views: 0,
+          rating: 0,
+        }
+      })
+      await newVideo.save();  // 데이터를 만들고 저장하는 과정
+      아래방법이 더쉬움
+      */
+      await Video.create({
+        title,
+        description,
+        hashtags:hashtags.split(',').map(item=>`#${item}`),
+      })
+    } catch (err){
+      return res.render('upload', { pageTitle: 'Upload Video', errorMessage: err._message })
+    }
+    export const postEditVideo = async (req, res) => {
+      const { id } = req.params;
+      const { title, description, hashtags } = req.body;
+      const video = await Video.exists({ _id: id }) // Video.exists({conditions})
+      if(!video) {
+        return res.render('404', { pageTitle: 'Video not found.' })
+      }
+      await Video.findByIdAndUpdate(id, {
+        title, description, hashtag: hashtags.split(',').map( item => item.startsWith('#') ? item : `#${item}`)
+      })
+      return res.redirect(`/videos/${id}`)
+    }
+  }
+  ```
+- src/index.js(src/server.js)에서 `import '스키마이름.js경로'`
+- CRUD는 Create, Read, Update, Delete  
+
+**✔️ src/index.js(src/server.js)와 src/init.js로 구분하기**
+- src/index.js(src/server.js)에는 server(express)에 대한 기능만 작성하고
+  src/init.js에는 서버 open기능 및 스키마 import구문 작성
+- src/init.js 생성
+  ```js 
+  // 아래 코드들을 src/index.js(src/server.js)에서 추출해오기
+  import './db' 
+  import './models/Video.js'  
+  import app from './index.js'  
+
+  let PORT = 4000 
+
+  app.listen(4000, ()=>{ 
+    console.log(`✅ 'index.js': http://localhost:${PORT} 🚀`)
+  }) // 포트번호, 콜백함수
+  ```
+- src/index.js(src/server.js)에 `export default app` 추가 
+- package.json → scripts → `"dev": "nodemon --exec babel-node src/init.js"` 교체  
+
+**✔️ Mongoose 미들웨어**  
+- Mongoose 미들웨어를 통해 데이터가 db에 저장,업데이트 되기 전 무언가를 실행할 수 있다.
+- 미들웨어는 스키마가 생성되기전에 작성되어야함
+- Mongoose 미들웨어는 모든 Mongoose function에 적용에 되지 않으므로,  
+  이러한 경우에는 Mongoose static으로 Statics 미들웨어를 만들어 사용한다.
+  ```js
+  // src/models/Video.js
+  // mongoose 미들웨어 ( 스키마 생성 전에 작성되어야 함 ) #6.23 참고
+  videoSchema.pre('save', async function (){
+    //videoSchema가 'save' 되기 전에 실행되는 미들웨어, this는 저장될 data를 의미한다.
+    this.hashtags = this.hashtags[0].split(',').map( item => item.startsWith('#') ? item : `#${item}`)
+  })
+
+  // mongoose 커스터마이징 미들웨어 ( = statics middleware) #6.24 참고
+    // Schema.pre는 Model.create()에는 적용되지만, Model.findByIdAndUpdate() 등에는 적용되지 않기에 statics middleware를 만듬
+    videoSchema.static('formatHashtags', (hashtags)=>{
+      return hashtags.split(',').map( item => item.startsWith('#')? item : `#${item}`)
+    })
+    // 사용방법은 express middleware의 controller에서 Model이름.formatHashtags
+
+  // 스키마 생성
+  const Video = mongoose.model("Video", videoSchema);
+  export default Video;
+  ```
+
+**✔️ URL Query 받는방법**
+- url query는 localhost:4000/search?keyword=react 에서 ? 이후 나오는것들을 쿼리라고 한다.
+- req.query를 통해 조회가능하다. #6.26 참고

@@ -1,4 +1,9 @@
 extends base.pug
 
 block contents 
-  h1 Edit page
+  h4 Update Video
+  form(method='post')
+    input(name='title', placeholder='Video Title', type="text", required, value=video.title)
+    input(name='description', placeholder="Description", required, type="text", minLength=5, value=video.description)
+    input(name='hashtags', placeholder="Hashtags, separated by comma.", required, type="text", value=video.hashtags.join())
+    input(value='Save', type='submit')
