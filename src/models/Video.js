@@ -30,4 +30,13 @@ videoSchema.pre('save', async function (){
 const Video = mongoose.model("Video", videoSchema);
 export default Video;
 
-// 스키마로 만들어진 데이터를 모델이라고함.
+
+
+/*--------------------------------------------------------------------------------------------------------------------------
+
+@ 스키마로 만들어진 데이터를 모델이라고함.
+@ Video model 정의가 끝났으면 init.js에서 import
+30. mongoose.model("Video", videoSchema);는 db에 'videos' collection을 생성 후 연결하고 (mongoose가 자동으로 복수로 변환해줌),
+    videos collection에 들어갈 document들은 스키마객체의 형식을 따른다.
+
+*/

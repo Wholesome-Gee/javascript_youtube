@@ -3,8 +3,8 @@
 ### 2.0 ~ 2.4 ✏️
 **✔️ 초기작업**
 - `npm init`
-- `npm i express`
-- `npm i --save-dev @babel/core @babel/preset-env @babel/node nodemon`
+- express 설치 `npm i express`
+- babel 설치 `npm i --save-dev @babel/core @babel/preset-env @babel/node nodemon`
   - nodemon은 개발중에 코드 수정을 할 때마다 자동으로 서버를 재시작해줌
   - babel.config.json 파일 생성
     ```json
@@ -12,10 +12,10 @@
       "presets": ["@babel/preset-env"]
     }
     ```
-- package.json → scripts → `"dev": "nodemon --exec babel-node src/index.js"`
-- index.html , src/index.js , index.css 파일생성
+- package.json → scripts → `"dev": "nodemon --exec babel-node src/server.js"`
+- index.html , src/server.js 파일생성
 - .gitignore 파일 생성
-  ```js
+  ```
   /node_modules
   ```
 - `git init`
@@ -30,11 +30,8 @@
 **✔️ 서버 만들기**
 - #2에 있는 세팅을 먼저 끝내 놓기
 - `npm i express`
-- src/index.js →  `import express from 'express';`
-  - 혹은 package.json → scripts →  
-    `"dev": "nodemon --exec babel-node src/server.js"` →  
-    src/server.js 파일 생성 →  `import express from 'express';`
-- src/index.js(src/server.js) 
+- package.json → scripts → `"dev": "nodemon --exec babel-node src/server.js"` → src/server.js 파일 생성 → `import express from 'express';`
+- src/server.js 
   ```js
   import express from 'express';
 
@@ -75,7 +72,7 @@
 - `npm i morgan`
 - morgan middleWare는 서버에 요청이 들어올 시 요청,응답정보를 보여준다.  
   ex) `GET / 304 2.374 ms - -`
-- src/index.js(src/server.js)
+- src/server.js
   ```js
   app.use(morgan('dev'))
   ```
@@ -88,16 +85,16 @@
   - parameter에 '/:videoId(\\d+)' 는 숫자(digit)로만 이루어진 파라미터를 받을 수 있다. 
   - (\d+)에서 \을 특수기호가 아닌 문자열로 인식시켜주기위해 \를 하나 더 붙힘.
     ```js
-    // src/routers/globalRouter.js
+    // src/routers/rootRouter.js
     import express from 'express'
     import { homeVideo, joinUser } from '../controllers/videoController';
 
-    const globalRouter = express.Router(); // 라우터 생성
+    const rootRouter = express.Router(); // 라우터 생성
 
-    globalRouter.get('/',homeVideo); // 라우터 등록
-    globalRouter.get('/join',joinUser); // 라우터 등록
+    rootRouter.get('/',homeVideo); // 라우터 등록
+    rootRouter.get('/join',joinUser); // 라우터 등록
 
-    export default globalRouter
+    export default rootRouter
 
     // src/routers/userRouter.js
     import express from 'express'
@@ -135,17 +132,17 @@
   export const watchVideo = (req, res) => res.send("Watch Video Page");
   export const editVideo = (req, res) => res.send("Edit Video Page");
   ```
-- src/index.js(src/server.js) → `import OOORouter from 'OOORouter경로' → app.use('/OOO', OOORouter)
+- src/server.js → `import OOORouter from 'OOORouter경로' → app.use('/OOO', OOORouter)
   ```js
-  // src/index.js(src/server.js)
+  // src/server.js
   ...
-  import globalRouter from './routers/globalRouter';
+  import rootRouter from './routers/rootRouter';
   import userRouter from './routers/userRouter';
   import videoRouter from './routers/videoRouter';
   ...
   // 전역요청 (어떤 url이든 무조건 실행됨 )
   app.use(morgan('dev')) // morgan은 항상 전역요청 중 제일 맨위로 쓰자.
-  app.use('/',globalRouter)
+  app.use('/',rootRouter)
   app.use('/users',userRouter)
   app.use('/videos',videoRouter)
   ...
@@ -159,7 +156,7 @@
 **✔️ PUG 세팅하기**
 - pug는 Node.js에서 사용되는 마크업 언어 템플릿 엔진.
 - `npm i pug`
-- src/index.js(server.js)에 아래 내용 추가
+- src/server.js(server.js)에 아래 내용 추가
   ```js
   // view engine을 pug로 세팅
   app.set('view engine', 'pug') 
@@ -283,7 +280,7 @@ mixin video(video)
   - post 라우터 등록 → 미들웨어 생성
   - res.redirect('url') url로 유저를 돌려보냄
   - form태그를 사용해 서버로 post 요청을 보낸 데이터를 확인하는 방법 (form 내 input에는 name속성이 필수)
-    - src/index.js(src/server.js)에서 `app.use(express.urlencoded({ extended: true }));` 추가
+    - src/server.js에서 `app.use(express.urlencoded({ extended: true }));` 추가
       - express가 post 미들웨어의 req.body를 읽을 수 있도록 설정하는 작업으로 다른 app.use('router경로')보다 우선작성되어야함
     - src/routers에 post 라우터 등록 
       - `app.post('url',콜백함수)
@@ -295,7 +292,7 @@ mixin video(video)
     app.use('/videos',videoRouter)
     
     // src/routers/videoRouter.js
-    globalRouter.post('/:(\\d+)/edit',postEditVideo);
+    rootRouter.post('/:(\\d+)/edit',postEditVideo);
   
     // src/controllers/videoController.js
     export const postEditVideo = (req, res) => {
@@ -326,7 +323,7 @@ mixin video(video)
   db.on('error', handleError); // db 접속 에러시 event
   db.once('open', handleConnected) // db 연결 성공 시 event
   ```
-- src/index.js(src/server.js)에 `import './db.js'`
+- src/server.js에 `import './db.js'`
 - mongo cli
   - `mongosh` → db 켜기
     - `help` → 도움말
@@ -409,15 +406,15 @@ mixin video(video)
     }
   }
   ```
-- src/index.js(src/server.js)에서 `import '스키마이름.js경로'`
+- src/server.js에서 `import '스키마이름.js경로'`
 - CRUD는 Create, Read, Update, Delete  
 
-**✔️ src/index.js(src/server.js)와 src/init.js로 구분하기**
-- src/index.js(src/server.js)에는 server(express)에 대한 기능만 작성하고
+**✔️ src/server.js와 src/init.js로 구분하기**
+- src/server.js에는 server(express)에 대한 기능만 작성하고
   src/init.js에는 서버 open기능 및 스키마 import구문 작성
 - src/init.js 생성
   ```js 
-  // 아래 코드들을 src/index.js(src/server.js)에서 추출해오기
+  // 아래 코드들을 src/server.js에서 추출해오기
   import './db' 
   import './models/Video.js'  
   import app from './index.js'  
@@ -428,7 +425,7 @@ mixin video(video)
     console.log(`✅ 'index.js': http://localhost:${PORT} 🚀`)
   }) // 포트번호, 콜백함수
   ```
-- src/index.js(src/server.js)에 `export default app` 추가 
+- src/server.js에 `export default app` 추가 
 - package.json → scripts → `"dev": "nodemon --exec babel-node src/init.js"` 교체  
 
 **✔️ Mongoose 미들웨어**  
@@ -459,3 +456,60 @@ mixin video(video)
 **✔️ URL Query 받는방법**
 - url query는 localhost:4000/search?keyword=react 에서 ? 이후 나오는것들을 쿼리라고 한다.
 - req.query를 통해 조회가능하다. #6.26 참고
+
+---
+## #7 ⭐
+### 7.2 Creating Account Part Three ✏️ 
+**✔️ 비밀번호 hashing 하는 방법**
+- 바이크립트 설치 `npm i bcrypt` 
+- 바이크립트는 입력값(원본 패스워드)를 해싱된 출력값(해싱 패스워드로)으로 변환해준다. 
+- 입력값이 같다면 출력값도 같다.
+- ```js
+  import bcrypt from "bcrypt";
+  userSchema.pre("save", async function () {
+    this.password = await bcrypt.hash(this.password, 5); // this.password는 입력값, 5는 해싱횟수
+  });
+  ```
+---
+### 7.3 Status Codes ✏️
+**✔️ Status Codes(상태코드 400,404...) 써야하는 이유**
+- 상태코드를 사용함으로써 유저의 요청이 잘된 요청인지 잘못된 요청인지 브라우저가 인식함.
+- 예를들어, 회원가입시 비밀번호입력과 비밀번호 재입력이 다르게 전송될 경우,   
+  상태코드를 입력하지 않으면 비밀번호를 저장하시겠냐는 팝업창이 나옴.  
+- 상태코드 종류 : https://ko.wikipedia.org/wiki/HTTP_%EC%83%81%ED%83%9C_%EC%BD%94%EB%93%9C
+---
+### 7.6 Login part Two ✏️
+**✔️ 유저가 입력한 비밀번호와 데이터베이스의 비밀번호 비교하는방법 (bcrypt.compare())**
+```js
+// password는 유저의 입력값, user.password는 db에 저장되있는 해싱된 password
+const ok = await bcrypt.compare(password, user.password);
+```
+---
+### 7.7 Session and Cookies part One ✏️
+**✔️ Session으로 로그인한 유저 기억하기**
+- `npm i express-session`
+- src/sever.js에 `import session from 'express-session'`
+  ```js
+  import session from "express-session";
+  app.use(
+    session({
+      secret: "Secret KEY",
+      resave: true,
+      saveUninitialized: true,
+    })
+  );
+  /*
+  app.use((req, res, next) => {
+    req.sessionStore.all((error, sessions) => {
+      console.log(sessions);
+      next();
+    });
+  });
+  */
+  ```
+
+  서버가 브라우저에게 session을 부여해주고, 서버는 부여한 session을 메모리에 담아둔다.
+  브라우저는 sessionStorage에 session을 담고, cookie에 session ID를 담는다
+  이후, 서버에 요청할때마다 cookie를 함께 서버에 보낸다.
+  서버는 cookie에 담긴 sessionID를 확인하여 서버 메모리에 있는 session중 sessionID가 일치하는 session을 찾는다.
+  

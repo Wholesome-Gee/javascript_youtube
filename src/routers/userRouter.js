@@ -12,3 +12,9 @@ userRouter.get('/:id',watchUser);
 
 // 라우터 export (→ index.js)
 export default userRouter;
+
+/*
+
+
+🚀 src/routers/videoRouter.js로 이동
+*/

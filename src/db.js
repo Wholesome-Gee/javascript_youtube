@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'; //
 
 /*
 mongoose 6.x 버전 이하 일 시 
@@ -6,6 +6,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/geetube', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
+  useCreateIndex: true,
  });
 */
 mongoose.connect('mongodb://127.0.0.1:27017/geetube') // mongoDb주소에 geetube collection 생성
@@ -22,3 +23,7 @@ function handleConnected(){
 }
 db.on('error', handleError); // db 접속 에러시 event
 db.once('open', handleConnected) // db 연결 성공 시 event
+
+/*
+11. MongoDB에 연결후, geetube라는 db를 생성
+ */
