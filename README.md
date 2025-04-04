@@ -1,3 +1,45 @@
+init.js부터 읽을것 
+사용 된 모듈 
+npm i --save-dev @babel/core @babel/preset-env @babel/node nodemon
+npm i express
+npm i express-session
+npm i morgan
+npm i connect-mongo
+npm i pug
+npm i mongoose
+npm i bcrypt
+npm i dotenv
+폴더구조
+- JS_YOUTUBE
+  - .vscode
+  - node_modules
+  - .gitignore
+  - .env
+  - babel.config.json
+  - index.html
+  - package-lock.json
+  - package.json
+  - README.md
+  - src
+    - models
+      - User.js
+      - Video.js
+    - routers
+      - rootRouter.js
+      - userRouter.js
+      - videoRouter.js
+    - views
+      - mixin
+      - parts
+    - controllers
+      - userController.js
+      - videoController.js
+    - init.js
+    - db.js
+    - index.js (server.js)
+    - middlewares.js
+
+
 # 🔥 [풀스택] 유튜브 클론코딩 (노마드코더) 🔥
 ## #2 SET UP ⭐
 ### 2.0 ~ 2.4 ✏️
@@ -512,4 +554,98 @@ const ok = await bcrypt.compare(password, user.password);
   브라우저는 sessionStorage에 session을 담고, cookie에 session ID를 담는다
   이후, 서버에 요청할때마다 cookie를 함께 서버에 보낸다.
   서버는 cookie에 담긴 sessionID를 확인하여 서버 메모리에 있는 session중 sessionID가 일치하는 session을 찾는다.
+
+  `npm i connect-mongo` 휘발성인 session을 mongoDB와 연결
+  `import MongoStore from 'connect_mongo'`
+  `app.use(session({ store: MongoStore.create({ mongoUrl:"mongodb주소" }) })) // session이 express(server)의 메모리에 저장되는것을 우리의 DB에 저장되도록 해준다. 서버는 재시작될 때마다 메모리가 초기화됨
+
+  #7.14
+  f12 - application - cookie 에대해
+    secret : express가(server) 쿠키를 발급했음을 사인하는 스트링
+    domain : 쿠키가 어디서 만들어졌는지, 어디로 보내져야하는지 적혀있음
+    Expires/Max-Age : 쿠키의 만료되는 날짜 (session이라고 적혀있으면 만료날짜가 설정되지 않은것)
+    ```js
+    app.use(session({
+      secret: process.env.SESSION_SECRET,
+      resave: false, 
+      saveUninitialized:false,  
+      store: MongoStore.create({ mongoUrl: 'mongodb://127.0.0.1:27017/geetube' }),
+      cookie: {
+        maxAge: 86400000 * 1
+      }
+    }))
+    ```
   
+  #7.14~7.15
+  .env에 대해
+  `npm i dotenv`
+  init.js → `import 'dotenv/config`
+  `let secret = process.env.SECRET_KEY;`
+  
+#7.16
+소셜로그인 구현(깃헙)
+흐름 : 깃헙로그인을하려면 - 유저를 깃헙으로보냄 - 유저는 깃헙으로 이메일,패스워드 등을 넣음 그리고 정보공유를 승인함 - 깃헙이 유저와 유저의 토큰을 우리 웹사이트로 돌려보냄
+세팅 : 깃헙 로그인 - 우측프로필 클릭 - Setting - developer settings - OAuth Apps - new OAuth app - 정보입력( Application name: Geetube, Homepage URL: http://localhost:4000, Authorization callback URL: http://localhost:4000/users/github/finish )
+  -Authorization callback URL는 유저가 OAuth 승인을 하면 Github가 user와 token을 해당 주소로 보내준다. server는 해당 주소의 router를 생성하여 token을 받아야한다. #7.17
+
+사용법
+userController.js의 startGithubLogin, finishGithubLogin 를 참고
+유저를 깃허브에 보냄
+깃허브에서 유저와 코드를 보내줌
+깃허브에 코드와 클라이언트 id등을 또 보냄
+깃허브에서 토큰을 보내줌
+토큰안에 액세스토큰을 깃허브에 또보냄
+
+
+
+1.유저를 깃헙으로보냄 (GET https://github.com/login/oauth/authorize?client_id="OAuthApp의 클라이언트아이디입력"&allow_signup=false&scope=read%3Auser+user%3Aemail)
+  - allow_signup=false는 github유저가 아니면 github 회원가입을 시킬건지 여부 #7.16
+  - scope에 대한설명은 #7.17
+2.깃헙으로부터 유저의 토큰을 받기
+  - src/routers/userRouter.js에 `userRouter.get('/github/finish',finishGithubLogin)`
+  - src/controllers/userController.js에 `export const finishGithubLogin = (req, res) => {}`
+
+#7.19
+---
+ 
+#8.1
+로그인하지 않은 유저가 edit-profile url로 이동할 수 없도록 미들웨어로 보호하는방법
+로그인한 유저가 login url로 이동할 수 없도록 미들웨어로 보호하는 방법
+Router.route('/routeURL').all(모든 request 메서드에 실행될 미들웨어).get(getController).post(postController)
+
+#8.2
+userControllers의 postEdit 수정
+
+#8.3 
+const updatedUser = Model.findByIdAndUpdate(id,{name,email,username,location},{new:true})에서 new true는  
+원래 findBtIdAndUpdate는 업데이트 전 data를 리턴하는데 {new:true}로 인해서 업데이트 후 data를 리턴함.
+
+#8.4~8.5
+비밀번호변경 페이지 작업
+- userControllers의 getChangedPassword와 postChangePassword 작업
+
+
+
+
+
+
+
+
+
+
+
+
+---
+express에 관해서
+express.urlencoded({property})에서 property종류 
+1. urlencoded 
+  - boolean값을 주어야한다. form으로 부터 받은 데이터를 express가 읽을 수 있도록 하는 역할.
+2. limit
+  - string이나 number 값을 주어야한다. 요청 본문에서 허용되는 최대 바이트 수를 설정한다. (기본값 100kb)
+3. type
+  - 욫ㅓㅇ
+
+
+session 과 cookie의 차이점
+- session은 서버(express)에서 유저의 정보를 저장하는 방법으로 유저가 웹사이트를 닫거나 일정 시간동안 마우스,키보드 움직임이 없으면 종료된다.
+- cookie는 웹(app)에서 유저의 정보를 저장하는 방법으로 만료날짜가 지나면 삭제된다.

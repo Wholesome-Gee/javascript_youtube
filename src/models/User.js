@@ -3,9 +3,11 @@ import mongoose from "mongoose";
 
 // 스키마 정의
 const userSchema = new mongoose.Schema({
+  avatarUrl: String,
   email: { type: String, required: true, unique: true },
+  socialOnly: { type:Boolean, default:false },
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: String,
   name: { type: String, required: true },
   location: String,
 })

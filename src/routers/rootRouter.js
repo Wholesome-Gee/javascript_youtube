@@ -1,28 +1,23 @@
 import express from 'express';
-import { getHomeVideo, getSearchVideo } from '../controllers/videoController';
+import { getHome, getSearch } from '../controllers/videoController';
 import { getJoin, postJoin, getLogin, postLogin } from '../controllers/userController';
+import { publicOnlyMiddleware } from '../middlewares';
 
 // 라우터 생성
 const rootRouter = express.Router();
 
 // 라우터 등록
-rootRouter.get('/',getHomeVideo);
-rootRouter.route('/join').get(getJoin).post(postJoin);
-rootRouter.route('/login').get(getLogin).post(postLogin);
-rootRouter.get('/search',getSearchVideo);
+rootRouter.get('/',getHome);
+rootRouter.route('/join').all(publicOnlyMiddleware).get(getJoin).post(postJoin);
+rootRouter.route('/login').all(publicOnlyMiddleware).get(getLogin).post(postLogin);
+rootRouter.get('/search',getSearch);
+/*
+9. route url에 get과 post중 하나만 필요할땐, Router.get('route url', controller)
+10. route url에 get과 post 둘 다 필요할땐, Router.route('route url').get(controller).post(controller)
+*/
 
 // 라우터 export (→ index.js)
 export default rootRouter;
 
 
-
-
-/*-----------------------------------------------------------------------
-
-6. 라우터를 생성하는 방법 = express.Router()
-9~12. globalRouter가 get요청을 받도록 설정한다. 
-15. export된 globalRouter는 index.js에서 import 된다.
-
-
-🚀 src/routers/userRouter.js로 이동
-*/
+//🚀 src/controllers/videoController.js로 이동

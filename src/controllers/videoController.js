@@ -1,12 +1,12 @@
 import Video from "../models/Video";
 
 // 미들웨어 생성
-export const getHomeVideo = async (req, res) => {
+export const getHome = async (req, res) => {
   const videos = await Video.find({}).sort({createdAt:'desc'})
   return res.render('home', { pageTitle:'Home',videos });
 }
 
-export const getSearchVideo = async(req, res) => {
+export const getSearch = async(req, res) => {
   const { keyword } =req.query; 
   let videos = [];
   if(keyword) {
@@ -19,9 +19,9 @@ export const getSearchVideo = async(req, res) => {
   res.render('search', { pageTitle:'Search', videos })
 }
 
-export const getUploadVideo = (req, res) => res.render('upload',{ pageTitle: 'Upload Video' });
+export const getUpload = (req, res) => res.render('upload',{ pageTitle: 'Upload Video' });
 
-export const getWatchVideo = async (req, res) => {
+export const getWatch = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
   if(!video) {
@@ -30,7 +30,7 @@ export const getWatchVideo = async (req, res) => {
   res.render('watch',{ pageTitle: video.title, video });
 }
 
-export const getEditVideo = async (req, res) => {
+export const getEdit = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
   if(!video) {
@@ -39,7 +39,7 @@ export const getEditVideo = async (req, res) => {
   res.render('edit',{ pageTitle:`Editing`, video });
 }
 
-export const getDeleteVideo = async (req, res) => {
+export const getRemove = async (req, res) => {
   const { id } = req.params;
   await Video.findByIdAndDelete(id);
   return res.redirect('/');
@@ -47,7 +47,7 @@ export const getDeleteVideo = async (req, res) => {
 
 
 // post
-export const postUploadVideo = async(req, res) => { 
+export const postUpload = async(req, res) => { 
   const { title,hashtags,description } = req.body;
   /*
   const newVideo = new Video({
@@ -68,7 +68,7 @@ export const postUploadVideo = async(req, res) => {
   }
 }
 
-export const postEditVideo = async (req, res) => {
+export const postEdit = async (req, res) => {
   const { id } = req.params;
   const { title, description, hashtags } = req.body;
   const video = await Video.exists({ _id: id })

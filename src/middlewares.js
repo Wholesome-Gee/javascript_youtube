@@ -1,9 +1,25 @@
 export const localsMiddleware = (req, res, next) => {
   res.locals.siteName = "Geetube";
   res.locals.loggedIn = Boolean(req.session.loggedIn);
-  res.locals.loggedInUser = req.session.user;
+  res.locals.loggedInUser = req.session.user || {};
   next();
 };
+
+export const loginOnlyMiddleware = (req,res,next) => {
+  if(req.session.loggedIn) {
+    next()
+  } else {
+    res.redirect('/login')
+  }
+}
+
+export const publicOnlyMiddleware = (req,res,next) => {
+  if(!req.session.loggedIn){
+    next()
+  } else {
+    res.redirect('/')
+  }
+}
 
 /*
 2. middleware에서 res에는 locals라는 property가 존재하는데, locals는 pug 템플릿과 연동되어있다.
