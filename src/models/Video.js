@@ -10,7 +10,12 @@ const videoSchema = new mongoose.Schema({
     views: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },
   },
-  videoUrl: { type: String, required:true }
+  videoUrl: { type: String, required:true },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId, // mongoose.Schema.Types.ObjectId는 mongoDB에서 랜덤하게 부여하는 _id 값의 타입을 지정할때 사용한다.
+    required: true,
+    ref: "User" // owner에 들어올 값인 MongoDB의 _id가 어느 모델로부터 온건지 알려주는 역할, 즉 videoSchema의 owner property는 User 모델로부터 오는(혹은 User DB) MongoDB ObjectId 타입이다라는 뜻
+  }
 })
 /*
 4. 스키마(Schema)는 데이터베이스(MongoDB)의 collection에 저장 될 document(data)의 구조이다.

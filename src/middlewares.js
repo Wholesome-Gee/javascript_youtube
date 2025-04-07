@@ -36,6 +36,8 @@ export const uploadVideo = multer({ dest: "uploads/videos/", limits:{fileSize:10
     html input type file로 부터 들어온 파일은 dest의 경로에 저장된다. (경로에 적힌 폴더는 자동 생성됨.)
     html input type file로 부터 들어온 파일은 limits로 인해 제한을 받는다.
     html input type file을 담고있는 form에는 enctype="multipart/form-data" 속성을 붙혀줘야한다.
-    그 이후 router에서 post에 uploadFiles.single('avatar') 이런식으로 미들웨어를 사용해주고, controller에서 작업을 한다. 
+    이후 router에서 post에 upload미들웨어.single('avatar 혹은 video') 이런식으로 미들웨어를 사용해주고, controller에서 작업을 한다.
+    controller에서 req.file.path로 업로드된 파일의 경로를 받아와서 db에 저장한다. (db에는 파일이 저장되는것이 아닌 파일의 경로가 저장되는것)
+    이후 각 템플릿에서 db에 있는 파일 경로를 사용한다. (ex) video(src='/'+video.videoUrl)
     sever.js에는 전역요청으로 app.use('/uploads',express.static('uploads')) 를 작성해주어야 한다.
 */

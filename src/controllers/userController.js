@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt"; // npm i bcrypt
 import User from "../models/User";
+import Video from "../models/Video";
 
 // 미들웨어 생성
 export const getJoin = (req,res) => {
@@ -90,8 +91,8 @@ export const finishGithubLogin = async (req,res) => {
         },
       })
     ).json();
-    /*
     console.log(userData)
+    /*
     {
       login: 'Wholesome-Gee', id: 191937701, node_id: 'U_kgDOC3C8pQ', avatar_url: 'https://avatars.githubusercontent.com/u/191937701?v=4',
       gravatar_id: '', url: 'https://api...', html_url: 'https://gith...', followers_url: 'https://api...', following_url: 'https://api...', 
@@ -125,8 +126,8 @@ export const finishGithubLogin = async (req,res) => {
     let user = await User.findOne({ email: emailObj.email })
     if(!user){
       user = await User.create({
-        avatarUrl: user.avatar_url,
-        name: userData.name,
+        avatarUrl: userData.avatar_url,
+        name: userData.name||userData.login,
         username: userData.login,
         email: emailObj.email,
         password: "",
@@ -208,7 +209,15 @@ export const postChangePassword = async (req,res) => {
 */
 
 export const remove = (req,res) => res.send("Delete User Page");
-export const watch = (req,res) => res.send("Watch User Page");
+export const watch = async (req,res) => {
+  const {id} = req.params
+  const user = await User.findById(id)
+  const videos = await Video.find({owner:user._id})
+  console.log(videos)
+  if(!user){ return res.status(404).render('404', { pageTitle:"404에러입니다." })}
+  console.log(id);
+  res.render('profile',{ pageTitle:`${user.name}의 프로필`, user, videos })
+}
 
 /*
 10. Model.exists(condition)은 조건에 맞는 document가 collection에 존재하는지 여부(true/false)를 리턴한다.

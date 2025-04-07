@@ -1,3 +1,4 @@
+import User from "../models/User";
 import Video from "../models/Video";
 
 // 미들웨어 생성
@@ -23,7 +24,7 @@ export const getUpload = (req, res) => res.render('upload',{ pageTitle: 'Upload 
 
 export const getWatch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id);
+  const video = await (await Video.findById(id)).populate('owner') // populate는 덧붙히다 라는 뜻이 있다. #8.12영상을 참고
   if(!video) {
     return res.render('404', { pageTitle: 'Video not found.' })
   }
@@ -50,6 +51,7 @@ export const getRemove = async (req, res) => {
 export const postUpload = async(req, res) => { 
   const { title,hashtags,description } = req.body;
   const { file } = req
+  const { _id } = req.session.user
   /*
   const newVideo = new Video({
     title,
@@ -61,7 +63,9 @@ export const postUpload = async(req, res) => {
   try {
     await Video.create({
       videoUrl: file.path,
-      title, description, 
+      owner: _id,
+      title,
+      description, 
       hashtags: Video.formatHashtags(hashtags)
     })
     res.redirect('/')   

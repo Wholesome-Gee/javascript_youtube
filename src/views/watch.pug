@@ -5,6 +5,10 @@ block contents
   div 
     p=video.description
     small=video.createdAt
-  a(href=`${video.id}/edit`) Edit Video &rarr;
-  br
-  a(href=`${video.id}/delete`) Delete Video &rarr;
+  div 
+    small 게시자: 
+      a(href=`/users/${video.owner._id}`)=video.owner.name
+  if  String(video.owner._id) === loggedInUser._id
+    a(href=`${video.id}/edit`) Edit Video &rarr;
+    br
+    a(href=`${video.id}/delete`) Delete Video &rarr;
