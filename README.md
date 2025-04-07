@@ -625,10 +625,38 @@ const updatedUser = Model.findByIdAndUpdate(id,{name,email,username,location},{n
 - userControllers의 getChangedPassword와 postChangePassword 작업
 - 깃허브로 로그인한 사람은 특정페이지 url로 이동할 수 없도록 미들웨어로 보호하는 과제
 
-#8.6
+#8.6~8.7
 File 업로드하는방법
 `npm i multer`
-file을 post하는 form에 `enctype="multipart/form-data"` 추가
+html input file추가 `input(type='file' name='avatar' accept='image/*')`  
+html input file을 post하는 form에 `enctype="multipart/form-data"` 추가  
+uploadFiles 미들웨어 추가 
+- .gitignore에 /uploads 추가   
+```js
+// src/middlewares.js
+export const uploadFiles = multer({ dest: "uploads/" })`
+```
+- 전역요청 추가
+```js
+// server.js
+app.use('/uploads',express.static('uploads'))
+```
+post route에 middleware 추가 `app.use(uploadFiles.single('input file's name), controller)`    
+controller작성
+```js 
+export const postEdit = async (req,res) => {
+  ...
+  const {file} = req
+  ...
+  const updatedUser = await User.findByIdAndUpdate(id,{
+    ...
+    avatarUrl: file ? file.path : req.session.avatarUrl
+  },{new: true})
+  ...
+}
+```
+
+
 
 
 

@@ -149,34 +149,34 @@ export const getEdit = (req,res) => {
   res.render('edit-profile', { pageTitle: 'Edit Profile' })
 }
 export const postEdit = async (req,res) => {
-  const {_id} = req.session.user
-  const {name, email, username, location } = req.body
-  // 입력받은 데이터가 기존 데이터와 변경사항이 없다면 아래 if문 실행
-  if(!Object.keys(req.body).every(key => req.body[key] === req.session.user[key])){
-    //username과 email중에 변경사항이 있다면 중복검토
+  const {_id, avatarUrl} = req.session.user
+  const {name, email, username, location, } = req.body
+  const { file } = req
+  if((!Object.keys(req.body).every(key => req.body[key] === req.session.user[key]))||file){
     const existsEmail = await User.findOne({email})
     const existsUsername = await User.findOne({username})
     if(email!==req.session.user.email && existsEmail){
-      // 중복된이메일입니다
       return res.status(400).render('edit-profile', { pageTitle: "Edit Profile", errorMessage: '중복된 이메일입니다.' })
     } else if(username!==req.session.user.username && existsUsername){
-      // 중복된유저네임입니다.
       return res.status(400).render('edit-profile', { pageTitle: "Edit Profile", errorMessage: '중복된 닉네임입니다.' })
     } else {
-      const updatedUser = await User.findByIdAndUpdate(_id,{name,email,username,location},{new:true})
+      const updatedUser = await User.findByIdAndUpdate(_id,{
+        avatarUrl:file ? file.path : avatarUrl, 
+        name,email,username,location
+      },{new:true})
       req.session.user = updatedUser
       console.log(req.session);
       return res.redirect('/users/edit')
     }
   }
   res.redirect('/users/edit')
-  /*
-  await User.findByIdAndUpdate(_id, {
-    ...req.session.user, name, email, username, location
-  })
-  form으로 부터 받은 data를 db에 저장하는 또다른 방법
-  */
 }
+/*
+154. form으로 부터 받은 file데이터 (file을 받기 위해선 multer 모듈을 설치해야한다.)
+155. Object.keys(obj).every( key = > 조건문 ) obj의 key를 배열로 묶어 순회하며 모든 item이 true를 리턴 시 true를 리턴, item중 하나라도 false를 리턴 시 false를 리턴한다.
+      해당 라인에서는 req.body의 모든 key를 순회하고, 각 key마다 req.body
+
+*/
 
 export const getChangePassword = (req,res) => {
   if(req.session.user.socialOnly === true){
