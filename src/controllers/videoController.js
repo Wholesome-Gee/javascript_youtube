@@ -33,16 +33,32 @@ export const getWatch = async (req, res) => {
 
 export const getEdit = async (req, res) => {
   const { id } = req.params;
+  const { _id } = req.session.user
   const video = await Video.findById(id);
   if(!video) {
     return res.status(404).render('404', { pageTitle: 'Video not found.' })
   }
+  if(String(video.owner) !== _id){ // 영상게시자와 로그인한유저의 id가 같지 않다면 edit페이지를 볼 수 없다. video.owner는 objectId타입, req.session.user._id는 string타입 #8.14
+    return res.status(403).redirect('/')
+  } 
   res.render('edit',{ pageTitle:`Editing`, video });
 }
 
 export const getRemove = async (req, res) => {
   const { id } = req.params;
+  const { _id } = req.session.user
+  const video = await Video.findById(id)
+  const user = await User.findById(_id)
+  
+  if(!video) {
+    return res.status(404).render('404', { pageTitle: 'Video not found.' })
+  }
+  if( String(video.owner) !== _id ) {
+    return res.status(403).redirect('/')
+  }
   await Video.findByIdAndDelete(id);
+  user.videos.splice(user.videos.indexOf(id),1);
+  user.save()
   return res.redirect('/');
 }
 
@@ -80,11 +96,15 @@ export const postUpload = async(req, res) => {
 export const postEdit = async (req, res) => {
   const { id } = req.params;
   const { title, description, hashtags } = req.body;
-  const video = await Video.exists({ _id: id })
+  const { _id } = req.session.user
+  const video = await Video.findById(id)
 
   if(!video) {
     return res.status(404).render('404', { pageTitle: 'Video not found.' })
   }
+  if(String(video.owner) !== _id){ // 영상게시자와 로그인한유저의 id가 같지 않다면 edit페이지를 볼 수 없다. video.owner는 objectId타입, req.session.user._id는 string타입 #8.14
+    return res.status(403).redirect('/')
+  } 
   await Video.findByIdAndUpdate(id, {
     title, description,
     hashtags: Video.formatHashtags(hashtags)

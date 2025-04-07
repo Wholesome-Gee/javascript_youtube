@@ -20,7 +20,9 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.pre('save', async function(){
-  this.password = await bcrypt.hash(this.password, 5);
+  if(this.isModified("password")){  // 비디오를 업로드할때, 비디오id를 user 데이터의 videos에 추가하고 저장을 하게되는데, 그때 불필요한 비밀번호 해싱이 일어난다. 그것을 막기위해 isModified("password")로 패스워드에 변화가 생겼을 시에만 해시를 실행하도록 설정  #8.14참고
+    this.password = await bcrypt.hash(this.password, 5);
+  }
 })
 
 // 스키마 생성
