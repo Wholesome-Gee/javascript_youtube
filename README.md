@@ -626,7 +626,7 @@ const updatedUser = Model.findByIdAndUpdate(id,{name,email,username,location},{n
 - 깃허브로 로그인한 사람은 특정페이지 url로 이동할 수 없도록 미들웨어로 보호하는 과제
 
 #8.6~8.7
-File 업로드하는방법
+이미지파일 업로드하는방법
 `npm i multer`
 html input file추가 `input(type='file' name='avatar' accept='image/*')`  
 html input file을 post하는 form에 `enctype="multipart/form-data"` 추가  
@@ -655,6 +655,10 @@ export const postEdit = async (req,res) => {
   ...
 }
 ```
+---
+#8.9
+비디오파일 업로드 하는 방법
+
 
 
 

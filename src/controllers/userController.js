@@ -174,7 +174,7 @@ export const postEdit = async (req,res) => {
 /*
 154. form으로 부터 받은 file데이터 (file을 받기 위해선 multer 모듈을 설치해야한다.)
 155. Object.keys(obj).every( key = > 조건문 ) obj의 key를 배열로 묶어 순회하며 모든 item이 true를 리턴 시 true를 리턴, item중 하나라도 false를 리턴 시 false를 리턴한다.
-      해당 라인에서는 req.body의 모든 key를 순회하고, 각 key마다 req.body
+
 
 */
 

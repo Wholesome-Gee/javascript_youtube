@@ -9,7 +9,8 @@ const videoSchema = new mongoose.Schema({
   meta: {
     views: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },
-  }
+  },
+  videoUrl: { type: String, required:true }
 })
 /*
 4. 스키마(Schema)는 데이터베이스(MongoDB)의 collection에 저장 될 document(data)의 구조이다.

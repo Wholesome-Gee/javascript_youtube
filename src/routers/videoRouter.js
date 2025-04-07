@@ -1,6 +1,6 @@
 import express from 'express';
 import { getEdit, getRemove, getUpload, getWatch, postEdit, postUpload } from '../controllers/videoController';
-import { loginOnlyMiddleware } from '../middlewares';
+import { loginOnlyMiddleware, uploadVideo } from '../middlewares';
 
 
 // 라우터 생성
@@ -10,7 +10,7 @@ const videoRouter = express.Router();
 // 라우터 등록
 videoRouter.get('/:id([0-9a-f]{24})', getWatch); 
 videoRouter.get('/:id([0-9a-f]{24})/remove', loginOnlyMiddleware, getRemove);
-videoRouter.route('/upload').all(loginOnlyMiddleware).get(getUpload).post(postUpload);
+videoRouter.route('/upload').all(loginOnlyMiddleware).get(getUpload).post(uploadVideo.single('video'), postUpload);
 videoRouter.route('/:id([0-9a-f]{24})/edit').all(loginOnlyMiddleware).get(getEdit).post(postEdit); 
 
 // 라우터 export

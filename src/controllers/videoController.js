@@ -49,6 +49,7 @@ export const getRemove = async (req, res) => {
 // post
 export const postUpload = async(req, res) => { 
   const { title,hashtags,description } = req.body;
+  const { file } = req
   /*
   const newVideo = new Video({
     title,
@@ -59,7 +60,8 @@ export const postUpload = async(req, res) => {
   */
   try {
     await Video.create({
-      title, description,
+      videoUrl: file.path,
+      title, description, 
       hashtags: Video.formatHashtags(hashtags)
     })
     res.redirect('/')   

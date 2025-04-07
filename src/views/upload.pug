@@ -3,8 +3,12 @@ extends base.pug
 block contents
   if errorMessage 
     span=errorMessage
-  form(method='post' action="/videos/upload") 
+  form(method='post', action="/videos/upload" enctype="multipart/form-data") 
+    label(for="video") 
+    input(type='file', accept="video/*", required, name="video", id='video')
     input(name='title', placeholder="Title", required, type="text", maxLength=80)
     input(name='description', placeholder="Description", required, type="text", minLength=5)
     input(name='hashtags', placeholder="Hashtags, separated by comma.", required, type="text")
     input(value='Upload Video', type='submit')
+
+//- 6. enctype='multipart/form-data'는 multer 모듈이 해당 form을 참조할수 있도록 해준다.
