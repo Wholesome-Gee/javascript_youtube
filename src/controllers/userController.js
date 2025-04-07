@@ -209,14 +209,14 @@ export const postChangePassword = async (req,res) => {
 */
 
 export const remove = (req,res) => res.send("Delete User Page");
-export const watch = async (req,res) => {
+export const getProfile = async (req,res) => {
   const {id} = req.params
-  const user = await User.findById(id)
-  const videos = await Video.find({owner:user._id})
-  console.log(videos)
+  const user = await (await User.findById(id)).populate('videos') // populate관련해서 #8.13참고
+  console.log(user);
+  
   if(!user){ return res.status(404).render('404', { pageTitle:"404에러입니다." })}
   console.log(id);
-  res.render('profile',{ pageTitle:`${user.name}의 프로필`, user, videos })
+  res.render('profile',{ pageTitle:`${user.name}의 프로필`, user,  })
 }
 
 /*

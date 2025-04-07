@@ -1,5 +1,5 @@
 import express from 'express';
-import { remove, watch, startGithubLogin, finishGithubLogin, logout, getEdit, postEdit, getChangePassword, postChangePassword } from '../controllers/userController';
+import { remove, startGithubLogin, finishGithubLogin, logout, getEdit, postEdit, getChangePassword, postChangePassword, getProfile } from '../controllers/userController';
 import { loginOnlyMiddleware, publicOnlyMiddleware, uploadAvatar } from '../middlewares';
 
 // 라우터 생성
@@ -12,7 +12,7 @@ userRouter.route('/change-password').all(loginOnlyMiddleware).get(getChangePassw
 userRouter.get('/remove', loginOnlyMiddleware, remove);
 userRouter.get('/github/start', publicOnlyMiddleware, startGithubLogin)
 userRouter.get('/github/finish', publicOnlyMiddleware, finishGithubLogin)
-userRouter.get('/:id',watch);
+userRouter.get('/:id',getProfile);
 
 // 라우터 export (→ index.js)
 export default userRouter;

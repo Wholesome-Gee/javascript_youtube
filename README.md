@@ -658,7 +658,8 @@ export const postEdit = async (req,res) => {
 ---
 #8.9
 비디오파일 업로드 하는 방법
-
+#8.10~#8.13
+populate를 사용하여 Schema끼리 연동시키는 방법
 
 
 

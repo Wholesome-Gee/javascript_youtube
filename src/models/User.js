@@ -10,6 +10,13 @@ const userSchema = new mongoose.Schema({
   password: String,
   name: { type: String, required: true },
   location: String,
+  videos: [
+    { 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Video",
+    }
+  ]
+  // videos는 Video Model에 연결된 ObjectId로 구성 된 배열이다.
 })
 
 userSchema.pre('save', async function(){

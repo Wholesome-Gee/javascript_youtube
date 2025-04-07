@@ -61,13 +61,16 @@ export const postUpload = async(req, res) => {
   await newVideo.save()
   */
   try {
-    await Video.create({
+    const newVideo = await Video.create({
       videoUrl: file.path,
       owner: _id,
       title,
       description, 
       hashtags: Video.formatHashtags(hashtags)
     })
+    const user = await User.findById(_id)
+    user.videos.push(newVideo._id)  // 비디오 생성할 때, 생성자 user의 데이터에 생성되는 video id를 추가 후 저장 #8.13
+    user.save()
     res.redirect('/')   
   } catch (error) {
     res.status(400).render('upload',{ pageTitle: 'Upload Video', errorMessage: error._message });
