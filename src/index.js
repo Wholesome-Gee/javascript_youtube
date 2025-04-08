@@ -42,15 +42,17 @@ app.use((req,res,next)=>{
 */
 app.use(localsMiddleware);
 app.use('/uploads',express.static('uploads'))
+app.use('/assets',express.static('assets'))
 app.use('/',rootRouter)
 app.use('/users',userRouter)
 app.use('/videos',videoRouter)
 /*
 43 → 어떤 도메인이든 localsMiddleware.js를 실행
 44 → 도메인 /uploads는 uploads폴더를 볼 수 있다.
-45 → 도메인 / 는 rootRouter로 이동
-46 → 도메인 /users 는 userRouter로 이동
-47 → 도메인 /videos 는 userRouter로 이동
+45 → 도메인 /assets는 assets폴더를 볼 수 있다.
+46 → 도메인 / 는 rootRouter로 이동
+47 → 도메인 /users 는 userRouter로 이동
+48 → 도메인 /videos 는 userRouter로 이동
 */
 export default app
 

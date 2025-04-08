@@ -5,6 +5,7 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     link(rel="stylesheet" href="https://unpkg.com/mvp.css") 
     title #{pageTitle} | #{siteName}
+    link(rel="stylesheet", href="/assets/css/styles.css")
   body 
     //- main은 mvp css 기능으로 나중에 삭제
     header
@@ -33,3 +34,4 @@ html(lang="en")
       block contents
         
   include parts/footer
+  script(src="/assets/js/main.js")

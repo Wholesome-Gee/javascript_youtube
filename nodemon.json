@@ -1,0 +1,5 @@
+{
+  "ignore": ["webpack.config.js", "src/client/*", "assets/*"],
+  "exec": "babel-node src/init.js",
+  "주석": "이 파일이 궁금하면 #9.7 강의 5:00을 참고해보도록"
+}

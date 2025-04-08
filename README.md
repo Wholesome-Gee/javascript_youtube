@@ -661,6 +661,108 @@ export const postEdit = async (req,res) => {
 #8.10~#8.13
 populate를 사용하여 Schema끼리 연동시키는 방법
 
+#9
+javascript의 최신 문법, scss같은 것들을 모든 브라우저가 이해할 수 있도록 webpack을 사용하자.
+  - ES6 문법을 구버전으로 변환해줌
+  - scss를 css로 변환해줌
+  - jpg를 압축된 jpg로 변환해줌
+직접적으로 잘 사용하진 않지만 업계표준익 적어도 어떻게 작동하는지 알아야한다.
+
+#9.1
+1. webpack 설치 = `npm i webpack webpack-cli -D`
+  - webpack-cli를 통해서 콘솔에서 webpack을 다룰 수 있다.
+2. 루트경로에 webpack.config.js 생성
+  - webpack.config.js는 js의 구버전 문법만 이해할 수 있음.
+  ```js
+  /*
+  webpack.config.js는 javascript의 구버전 문법만 이해 가능
+  npm i webpack webpack-cli -D  먼저 진행
+  */
+  const path = require("path")
+
+  module.exports = { // export default
+    entry: "./src/client/js/main.js", // entry는 처리하고자 하는 파일의 경로
+    output: {
+      filename:"main.js",  // 처리된 파일 이름
+      path: path.resolve(__dirname, 'assets', 'js') // 처리된 파일을 저장할 경로, 
+      clean
+      // path.resolve()는 인수들을 합쳐 하나의 경로를 만들어주고, 
+      // __dirname은 현재 프로젝트의 절대경로(C:\Users\jiyon\Desktop\...\js_youtube)
+    }
+  } 
+  ```
+3. src/client/js/main.js 생성
+  ```js
+  alert('hi!')
+  ```
+4. package.json → "scripts" → `"assets":"webpack --config webpack.config.js"` (혹시나 "type":"commonJS"가 존재한다면 삭제)
+  - assets는 webpack에서 관리하는 '자원'이라는 뜻
+5. `npm run assets` → 루트경로에 assets폴더 생성됨
+6. assets폴더의 js,css 파일들과 pug 템플릿을 연결시켜준다
+  - server.js에 `app.use('/assets',express.static('assets'))` 추가
+  - base.pug에 `script(src="/assets/js/main.js")` 추가
+  - base.pug에 `link(rel="stylesheet", href="/assets/css/styles.css")` 추가
+
+
+### #9.5
+**✔️ style-loader의 대체자 MiniCssExtractPlugin**
+- MiniCssExtractPlugin은 Css파일 DOM TREE에 추가할 뿐만 아니라, npm run assets시 별도의 css파일을 생성할 수 있다.
+- `npm i mini-css-extract-plugin -D`
+
+### #9.6
+**✔️ npm run assets시 기존 assets폴더 자동 삭제 후 새로운 assets폴더 생성하는 법**
+- webpack.config.js > module.exports 안에  `watch:true,`
+  - entry에 ctrl+s가 발생 시 자동으로 기존의 assets폴더를 삭제하고 npm run assets를 실행
+  - 나중에 Heroku와 sever 등으로 deploy할 때는 변경될것이다.
+
+### #9.7
+**✔️ npm run assets시 build전에 output path를 한번 청소해주자**
+- webpack.config.js > module.exports > output 안에 `clean:true,`
+  - npm run assets시 build가 일어나는데 그전에 output path에 불필요한 파일들을 전부 제거해준다.  
+
+**✔️ webpack이 재실행 될 때, server도 재실행 될 필요 없다**
+- 루트경로에 nodemon.json 생성 
+  ```json
+  {
+    "ignore": ["webpack.config.js", "src/client/*", "assets/*"],
+    "exec": "babel-node src/init.js"
+  }
+  ```
+- package.json > "scripts" > "dev"의 값을 "nodemon"으로 수정, "assets"의 값을 "webpack"으로 수정, "dev"와 "assets" key도 "dev:server", "dev:assets"로 변경
+  - npm run dev:server로 nodemon이 실행되면 nodemon은 기본적으로 nodemon.json을 찾아서 참고한다.
+  - npm run dev:assets로 webpack이 실행되면 webpack은 기본적으로 webpack.config.js를 찾아서 참고한다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
