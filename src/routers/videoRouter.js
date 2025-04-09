@@ -17,11 +17,12 @@ videoRouter.route('/:id([0-9a-f]{24})/edit').all(loginOnlyMiddleware).get(getEdi
 export default videoRouter;
 
 /*
-10. globalRouter.route('/upload').get(getUploadVideo).post(postUploadVideo) 이렇게 쓰면 10번라인과 15번 라인을 하나로 뭉칠 수 있다.
-11. router의 url에 /:id 입력시 id라는 parameter를 받을 수 있고, 정규표현식 역시 가능하다.
+11. '/:id'는 /videos/xxxx url로 요청이 들어올 시 xxxx를 req.parameter로 받는다.
   - '/:id(\\d+)' 라고 작성시, url parameter는 숫자(digit)만 받을 수 있다. #4.8 참고
   - '/:id([0-9a-f]{24})' 라고 작성시, url parameter는 24자리 hexadecimal string(mongoDB에서 부여받은 id)만 받을 수 있다. #6.19 참고
 13. uploadVideo.single('video') 는 /videos/upload로 post요청이 들어왔을 시 html input file 중 name이 'video'인 input을 찾아서 input에 담긴 file을 request에 담아준다.
+    uploadAvatar는 middlewares.js로부터 오는 middleware이고, html에서 name이 avatar인 input으로부터 한개의 파일을 받아서 req.file에 담는다. 이후, postEdit controller에서 req.file로 확인 가능
+
 
 🚀 src/controllers/videoController.js로 이동
 */

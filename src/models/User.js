@@ -1,11 +1,12 @@
 import bcrypt from "bcrypt"; // npm i bcrypt
-import mongoose from "mongoose";
+import mongoose from "mongoose"; // npm i mongoose
 
-// 스키마 정의
+
+// mongoose 스키마 정의
 const userSchema = new mongoose.Schema({
   avatarUrl: String,
   email: { type: String, required: true, unique: true },
-  socialOnly: { type:Boolean, default:false },
+  socialOnly: { type:Boolean, default:false },      
   username: { type: String, required: true, unique: true },
   password: String,
   name: { type: String, required: true },
@@ -16,24 +17,33 @@ const userSchema = new mongoose.Schema({
       ref: "Video",
     }
   ]
-  // videos는 Video Model에 연결된 ObjectId로 구성 된 배열이다.
 })
+/*
+9. github로 로그인한 유저에게 socialOnly는 true가 부여된다.
+11. github로 로그인한 유저는 password가 없기때문에 required:true가 아니다.
+14. videos는 mongoDB ID로 구성된 배열이다(type). videos 배열안에 mongoDB ID들은 Video collection의 document와 연결된다(ref).
+*/
 
+
+// mongoose 미들웨어 (스키마 생성 전에 작성)
 userSchema.pre('save', async function(){
-  if(this.isModified("password")){  // 비디오를 업로드할때, 비디오id를 user 데이터의 videos에 추가하고 저장을 하게되는데, 그때 불필요한 비밀번호 해싱이 일어난다. 그것을 막기위해 isModified("password")로 패스워드에 변화가 생겼을 시에만 해시를 실행하도록 설정  #8.14참고
+  if(this.isModified("password")){ 
     this.password = await bcrypt.hash(this.password, 5);
   }
 })
+/*
+29. userSchema가 저장되기(save) 이전에(pre) 콜백함수를 실행한다. (콜백함수는 this바인딩때문에 일반함수로 작성o, 화살표함수로 작성x)
+30. this는 저장될 데이터를 의미하고, this의 password가 수정되었는지(isModified) 여부를 검토한다.
+31. bcrypt.hash(password,해싱횟수) => password를 5번 해싱
+*/
+
 
 // 스키마 생성
 const User = mongoose.model("User", userSchema);
 export default User;
-
-/*-------------------------------------------------------------
-@ 스키마로 만들어진 데이터를 모델이라고함.
-@ User model 정의가 끝났으면 init.js에서 import
-
-1. 입력값을 해싱해주는 bcrypt 라이브러리
-14. this.password는 create되는 user의 password를 의미하며, bcrypt.hash(해싱 대상, 해싱횟수)이다. this바인딩 때문에 일반함수로 작성해야함(화살표함수로 작성시 this.password는 undefined)
-
+/*
+42. mongoDB 데이터베이스에 users라는 collection이 생성되고, users collection의 document는 userSchema를 따르며 UserModel이라고도 한다.
 */
+
+
+// init.js에서 import

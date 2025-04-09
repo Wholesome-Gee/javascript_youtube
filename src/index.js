@@ -15,31 +15,41 @@ const app = express();
 app.set('view engine', 'pug')
 app.set('views', process.cwd() + '/src/views')
 /* 
-14. express에게 html view engin을 pug로 사용한다고 알림.
-15. express는 views 폴더 안에서 html을 찾기 때문에 프로젝트 내 views폴더의 경로를 설정해줌. 
+15. express에게 html view engin을 pug로 사용한다고 알림.
+16. express는 views 폴더 안에서 html을 찾기 때문에 프로젝트 내 views폴더의 경로를 설정해줌. 
     process.cwd()는 package.json파일의 경로를 리턴한다.
 */
 
 
-// 전역요청 (모든 request에 순차적으로 실행됨)
-app.use(morgan('dev'))
+// 전역 middleware  (모든 request에 순차적으로 실행됨)
+app.use(morgan('dev'))  
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET, // 세션 보안키
   resave: false, 
-  saveUninitialized:false,  
+  saveUninitialized:false,   
   store: MongoStore.create({ mongoUrl: 'mongodb://127.0.0.1:27017/geetube' }),
   cookie: {
     maxAge: 86400000 * 1
   }
 }))
-/* 현재 Session db에 있는 모든 session을 조회하는 방법
-app.use((req,res,next)=>{ 
-  req.sessionStore.all((error,sessions)=>{ 
-  console.log(sessions); next() 
-})})
-  
+/*
+25. morgan은 server에 들어오는 HTTP 요청을 콘솔에 보여주는 라이브러리다. npm i morgan
+26. controller에서 req.body를 사용하기위한 middleware
+27. 모든 HTTP요청에 세션을 부여해준다.
+29. resave가 true이면 모든 HTTP요청에 세션을 다시 저장한다(서버 성능 저하),    
+    resave가 false이면 session이 수정되었을 때 다시 저장한다. (권장)
+30. saveUninitialized가 true이면 초기화되지 않은 session도 저장한다.
+    saveUninitialized가 false이면 초기화 된 session만 저장한다.
+31. session을 mongoDB 데이터베이스에 저장한다. (원래 session은 메모리에 저장됨)
+32. cookie는 서버가 브라우저측 부여하여 브라우저에 저장되는 작은 데이터조각이다. 
+33. cookie의 유효기간을 1일로 설정 (86400000ms는 1일이다.)
 */
+
+/* 현재 Session db에 있는 모든 session을 조회하는 방법
+app.use((req,res,next)=>{ req.sessionStore.all((error,sessions)=>{ console.log(sessions); next() })})  */
+
+/* 전역 요청 middleware */
 app.use(localsMiddleware);
 app.use('/uploads',express.static('uploads'))
 app.use('/assets',express.static('assets'))
@@ -47,12 +57,7 @@ app.use('/',rootRouter)
 app.use('/users',userRouter)
 app.use('/videos',videoRouter)
 /*
-43 → 어떤 도메인이든 localsMiddleware.js를 실행
-44 → 도메인 /uploads는 uploads폴더를 볼 수 있다.
-45 → 도메인 /assets는 assets폴더를 볼 수 있다.
-46 → 도메인 / 는 rootRouter로 이동
-47 → 도메인 /users 는 userRouter로 이동
-48 → 도메인 /videos 는 userRouter로 이동
+54. express.static('uploads')는 우리 프로젝트의 uploads라는 폴더에 접근할 수 있도록 해준다. 
 */
 export default app
 

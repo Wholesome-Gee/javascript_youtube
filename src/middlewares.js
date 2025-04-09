@@ -6,6 +6,11 @@ export const localsMiddleware = (req, res, next) => {
   res.locals.loggedInUser = req.session.user || {};
   next();
 };
+/*
+middleware에서 res에는 pug와 연동되어 있는 locals라는 property가 존재한다.
+res.locals.siteName='Geetube' 를 작성하면, pug template에서 #{siteName} 이렇게 사용할 수 있다.
+*/
+
 
 export const loginOnlyMiddleware = (req,res,next) => {
   if(req.session.loggedIn) {
@@ -24,20 +29,15 @@ export const publicOnlyMiddleware = (req,res,next) => {
 }
 
 export const uploadAvatar = multer({ dest: "uploads/avatars/", limits:{fileSize:3000000}})
-
 export const uploadVideo = multer({ dest: "uploads/videos/", limits:{fileSize:10000000}})
-
 /*
-2. middleware에서 res에는 locals라는 property가 존재하는데, locals는 pug 템플릿과 연동되어있다.
-  즉, res.locals.siteName='Geetube' 를 작성하면, 아무 pug template에서 #{siteName} 이렇게 사용할 수 있다.
-3. res.session.loggedIn을 통해 request에서 session을 열어 loggedIn 을 가져올 수 있다. 가져온 loggedIn은 pug template에 loggedIn이라는 변수로 전달된다.
-5. middleware를 정의했으면 꼭 next()를 해주자
 26. multer는 NodeJS환경에서 파일 업로드를 처리하는 미들웨어이다. 
-    html input type file로 부터 들어온 파일은 dest의 경로에 저장된다. (경로에 적힌 폴더는 자동 생성됨.)
-    html input type file로 부터 들어온 파일은 limits로 인해 제한을 받는다.
-    html input type file을 담고있는 form에는 enctype="multipart/form-data" 속성을 붙혀줘야한다.
-    이후 router에서 post에 upload미들웨어.single('avatar 혹은 video') 이런식으로 미들웨어를 사용해주고, controller에서 작업을 한다.
-    controller에서 req.file.path로 업로드된 파일의 경로를 받아와서 db에 저장한다. (db에는 파일이 저장되는것이 아닌 파일의 경로가 저장되는것)
-    이후 각 템플릿에서 db에 있는 파일 경로를 사용한다. (ex) video(src='/'+video.videoUrl)
+    html의 <input type='file'...>로 부터 들어온 파일은 dest의 경로에 저장된다. (경로에 적힌 폴더는 자동 생성됨.)
+    html의 <input type='file'...>을 담고있는 form에는 enctype="multipart/form-data" 속성을 붙혀줘야한다.
+    html의 <input type='file'...>로 부터 들어온 파일은 limits로 인해 제한을 받는다.
+    이후 app.Route('/url').post( uploadAvatar.single('avatar'), postController ) 이런식으로 미들웨어를 사용해주고, controller에서 작업을 한다.
+    controller에서 req.file.path로 업로드된 파일의 경로를 받아올 수 있다.(uploads/avatars/avatar.jpg)
+    req.file.path로 받아온 경로를 db에 저장해주자. (db에는 파일이 저장되는것이 아닌 파일의 경로가 저장되는것)  (ex) videos collection안에 video.videoUrl=req.file.path
+    이후 pug 템플릿에서 db에 있는 파일 경로를 사용한다. (ex) video(src='/'+video.videoUrl)
     sever.js에는 전역요청으로 app.use('/uploads',express.static('uploads')) 를 작성해주어야 한다.
 */

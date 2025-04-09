@@ -12,44 +12,41 @@ const videoSchema = new mongoose.Schema({
   },
   videoUrl: { type: String, required:true },
   owner: {
-    type: mongoose.Schema.Types.ObjectId, // mongoose.Schema.Types.ObjectId는 mongoDB에서 랜덤하게 부여하는 _id 값의 타입을 지정할때 사용한다.
+    type: mongoose.Schema.Types.ObjectId, 
     required: true,
-    ref: "User" // owner에 들어올 값인 MongoDB의 _id가 어느 모델로부터 온건지 알려주는 역할, 즉 videoSchema의 owner property는 User 모델로부터 오는(혹은 User DB) MongoDB ObjectId 타입이다라는 뜻
+    ref: "User" 
   }
 })
 /*
-4. 스키마(Schema)는 데이터베이스(MongoDB)의 collection에 저장 될 document(data)의 구조이다.
-5. maxLength와 minLength는 html input에도 속성으로 넣어서 웹(app)과 서버(server)에서 2중 검토 해주는것이 좋다.
-7. Date.now()라고 작성하면 서버(express)가 on 되는 시점의 시간이 기입되므로 주의
+5. maxLength, minLength는 html의 input에서도 한번 더 작성해주는것이 좋다. trim은 공백을 제거해준다.
+7. Date.now()라고 작성하면 video Model이 생성되는 시점이 아닌 서버(express)가 on 되는 시점의 시간이 기입된다.
+8. hashtags는 String으로 이루어진 배열이다.
+14. owner는 mongoDB ID를 받는다.(type). owner가 받은 mongoDB ID들은 User collection의 document와 연결된다(ref).
 */
 
 
-//mongoose 미들웨어 ( 스키마 생성 전에 작성되어야 함 ) #6.23
-// videoSchema.pre('save', async function (){
-// this.hashtags = this.hashtags[0].split(',').map( item => item.startsWith('#') ? item : `#${item}`)
-// })
-/* 
-22. videoSchema가 'save' 되기 전에 실행되는 미들웨어다. 
-23. this는 collection에 저장 대기중인 데이터(document)를 의미한다.
-*/
-
-// mongoose 커스터마이징 미들웨어 ( = statics middleware) #6.24
+//mongoose 미들웨어 (스키마 생성 전에 작성) #6.23
 videoSchema.static('formatHashtags', (hashtags)=>{
   return hashtags.split(',').map( item => item.startsWith('#')? item : `#${item}`)
 })
 /*
-Schema.pre는 Model.create()에는 적용되지만, Model.findByIdAndUpdate() 등에는 적용되지 않기에 statics middleware를 만듬
-31. 스키마(Schema)로 생성된 모델(Video)에 함수를 등록한다. Video.formatHashtags('문자열') 이런식으로 사용 가능해졌다.
-32. split은 문자열을 특정문자를 기준으로 구별해서 배열로 만들어준다.  ex) '인천,맛집,한식'.split(',') = ['인천','맛집','한식']
+29. videoSchema.static으로 Video Model에 전역함수 formatHashtags를 커스터마이징해준다. => VideoModel.formatHashtags('hash,tags') 
+30. split(',')은 문자열을 , 를 기준으로 구분하여 배열로 리턴   ex) '1,2,3' => ['1','2','3']
+
+videoSchema.pre('save', async function (){ this.hashtags = this.hashtags[0].split(',').map( item => item.startsWith('#') ? item : `#${item}`)// })
+- videoSchema.pre는 VideoModel.create()에는 적용되지만, VideoModel.findByIdAndUpdate() 등에는 적용되지 않기에 statics middleware를 만듬
 */
+
 
 // 스키마 생성
 const Video = mongoose.model("Video", videoSchema);
 export default Video;
 /*
-35. model("Video",videoSchema)에 의해 mongoose는 데이터베이스(MongoDB)에 'videos' collection을 생성하고, Video 모델에 의해 만들어진 데이터(document)는 'videos' collection에 들어간다.
-  - 스키마에 의해서 생성된 변수를 모델이라고함.(Video 모델), 
-  - Video는 init.js에서 import 
+42. mongoDB 데이터베이스에 videos라는 collection이 생성되고, videos collection의 document는 videoSchema를 따르며 VideoModel이라고도 한다.
 */
+
+
+// init.js에서 import
+
 
 // 🚀 src/router/rootRouter.js로 이동
