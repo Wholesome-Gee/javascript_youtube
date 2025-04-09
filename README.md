@@ -661,14 +661,14 @@ export const postEdit = async (req,res) => {
 #8.10~#8.13
 populate를 사용하여 Schema끼리 연동시키는 방법
 
-#9
+## #9
 javascript의 최신 문법, scss같은 것들을 모든 브라우저가 이해할 수 있도록 webpack을 사용하자.
   - ES6 문법을 구버전으로 변환해줌
   - scss를 css로 변환해줌
   - jpg를 압축된 jpg로 변환해줌
 직접적으로 잘 사용하진 않지만 업계표준익 적어도 어떻게 작동하는지 알아야한다.
 
-#9.1
+### #9.1
 1. webpack 설치 = `npm i webpack webpack-cli -D`
   - webpack-cli를 통해서 콘솔에서 webpack을 다룰 수 있다.
 2. 루트경로에 webpack.config.js 생성

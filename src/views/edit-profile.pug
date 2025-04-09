@@ -1,21 +1,18 @@
 extends base.pug
 
-block contents 
-  if errorMessage
-    span=errorMessage
-  img(src='/'+loggedInUser.avatarUrl, width='100px' height='100px')
-  form(method="post" action="/users/edit" enctype="multipart/form-data")
-    label(for="avatar") 
-    input(type="file" name='avatar' id='avatar' accept='image/*')
+block contents
+  form(method="POST", enctype="multipart/form-data").edit-profile__form
+    label(for="avatar") Avatar
+    input(type="file", id="avatar", name="avatar", accept="image/*")
     input(placeholder="Name", name="name", type="text", required, value=loggedInUser.name)
     input(placeholder="Email", name="email", type="email", required, value=loggedInUser.email)
     input(placeholder="Username", name="username", type="text", required, value=loggedInUser.username)
     input(placeholder="Location", name="location", type="text", required, value=loggedInUser.location)
     input(type="submit", value="Update Profile")
     if !loggedInUser.socialOnly
-      hr
-      a(href="change-password") Change Password &rarr;
+      div.edit-profile__password
+        a(href="change-password") Change Password &rarr;
 
 
-//- 6. enctype='multipart/form-data'를 form에 작성함으로써 multer 모듈이 해당 form으로부터 전송되는 파일데이터를 받아서 서버(express)로 전달할 수 있음.
-//- 8. accept='image/*'는 image파일만 업로드한다는 뜻
+//- 4. enctype='multipart/form-data'를 form에 작성함으로써 multer 모듈이 해당 form으로부터 전송되는 파일데이터를 받아서 서버(express)로 전달할 수 있음.
+//- 6. accept='image/*'는 image파일만 업로드한다는 뜻

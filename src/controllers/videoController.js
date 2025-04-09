@@ -5,7 +5,7 @@ import Video from "../models/Video";
 // controller(=final ware) 생성
 export const getHome = async (req, res) => {
   try {
-    const videos = await Video.find({}).sort({createdAt:'desc'})
+    const videos = await Video.find({}).sort({createdAt:'desc'}).populate('owner')
     return res.render('home', { pageTitle:'Home',videos });  
   } catch (error) {
     console.log(error);
@@ -28,7 +28,7 @@ export const getSearch = async(req, res) => {
         $regex: new RegExp(keyword, 'i'), 
         // $gt: 3 (3보다 크다)
       }
-    })
+    }).populate('owner')
   }
   res.render('search', { pageTitle:'Search', videos })
 }
@@ -44,7 +44,7 @@ export const getUpload = (req, res) => {
 
 export const getWatch = async (req, res) => {
   const { id } = req.params;
-  const video = await (await Video.findById(id)).populate('owner') // populate는 덧붙히다 라는 뜻이 있다. #8.12영상을 참고
+  const video = await Video.findById(id).populate('owner') // populate는 덧붙히다 라는 뜻이 있다. #8.12영상을 참고
   if(!video) {
     return res.render('404', { pageTitle: 'Video not found.' })
   }

@@ -11,7 +11,7 @@ block contents
     input(placeholder="비밀번호 재입력", name="password2", type="password", required)
     input(placeholder="사는곳(시,군)", name="location", type="text", required)
     input(type="submit", value="Join")
-  hr
-  div
+    include partials/social-login
+  div.auth-switch
     span 이미 회원이십니까? 
     a(href="/login") 로그인 하러 가기 &rarr;

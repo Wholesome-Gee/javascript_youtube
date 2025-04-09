@@ -211,12 +211,19 @@ export const postChangePassword = async (req,res) => {
 export const remove = (req,res) => res.send("Delete User Page");
 export const getProfile = async (req,res) => {
   const {id} = req.params
-  const user = await (await User.findById(id)).populate('videos') // populate관련해서 #8.13참고
+  const user = await (await User.findById(id)).populate({
+    path: 'videos',
+    populate:{
+      path:'owner',
+      model:"User"
+    }
+  }) 
   console.log(user);
-  
+  // populate관련해서 #8.13참고
+  // double populate 사용, user의 videos를 populate하고 그 videos 데이터의 owner를 populate
   if(!user){ return res.status(404).render('404', { pageTitle:"404에러입니다." })}
   console.log(id);
-  res.render('profile',{ pageTitle:`${user.name}의 프로필`, user,  })
+  res.render('users/profile',{ pageTitle:`${user.name}의 프로필`, user,  })
 }
 
 /*

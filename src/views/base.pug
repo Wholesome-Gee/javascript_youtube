@@ -3,35 +3,13 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    link(rel="stylesheet" href="https://unpkg.com/mvp.css") 
+    //- link(rel="stylesheet" href="https://unpkg.com/mvp.css") 
     title #{pageTitle} | #{siteName}
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css", integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==", crossorigin="anonymous", referrerpolicy="no-referrer")
     link(rel="stylesheet", href="/assets/css/styles.css")
   body 
-    //- main은 mvp css 기능으로 나중에 삭제
-    header
-      h1=pageTitle
-      nav
-        ul
-          li
-            a(href="/") 메인
-          if loggedIn 
-            li 
-              a(href="/videos/upload") 비디오 업로드
-            li 
-              a(href=`/users/${loggedInUser._id}`) 내 프로필
-            li 
-              a(href="/users/edit") 프로필 수정
-            li 
-              a(href="/users/logout") 로그아웃
-          else   
-            li 
-              a(href="/join") 회원가입
-            li 
-              a(href="/login") 로그인
-          li
-            a(href="/search") 검색
+    include partials/header
     main 
       block contents
-        
-  include parts/footer
+    include partials/footer
   script(src="/assets/js/main.js")

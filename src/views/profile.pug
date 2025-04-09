@@ -1,8 +1,0 @@
-extends base.pug
-include mixins/video.pug
-
-block contents
-  each video in user.videos
-    +video(video)
-  else 
-    li 비디오를 찾을 수 없습니다.
