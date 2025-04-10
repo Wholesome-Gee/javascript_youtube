@@ -732,6 +732,10 @@ javascript의 최신 문법, scss같은 것들을 모든 브라우저가 이해�
   - npm run dev:server로 nodemon이 실행되면 nodemon은 기본적으로 nodemon.json을 찾아서 참고한다.
   - npm run dev:assets로 webpack이 실행되면 webpack은 기본적으로 webpack.config.js를 찾아서 참고한다.
 
+## #11 VIDEO PLAYER ⭐
+
+
+
 
 
 

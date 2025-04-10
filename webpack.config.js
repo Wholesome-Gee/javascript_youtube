@@ -6,26 +6,30 @@ const path = require("path")
 const MiniCssExtractPlugin = require('mini-css-extract-plugin') // npm i mini-css-extract-plugin -D  관련해서는 #9.5 참고
 
 module.exports = {  // export default의 구문법 
-  entry: "./src/client/js/main.js",
+  entry: {
+    main: "./src/client/js/main.js",
+    videoPlayer: "./src/client/js/videoPlayer.js"
+  },
   mode: 'development',
   watch: true,
   /*
   9. entry는 압축하고자 하는 파일의 경로
-  10. mode가 production이면 npm run assets시 파일의 내용이 한줄로 압축됨, development면 압축안됨
-  11. watch는 entry에 ctrl+s가 발생 시 자동으로 기존의 assets폴더를 삭제하고 npm run assets를 실행한다.
+  13. mode가 production이면 npm run assets시 파일의 내용이 한줄로 압축됨, development면 압축안됨
+  14. watch는 entry에 ctrl+s가 발생 시 자동으로 기존의 assets폴더를 삭제하고 npm run assets를 실행한다.
   */
 
   output: {
-    filename:"js/main.js",                   
+    filename:"js/[name].js",                   
     path: path.resolve(__dirname, 'assets'), 
     clean: true, 
   },
   /*
-  19. output > filename은 압축 된 파일 이름
-  20. output > path는 압축 된 파일 저장 경로
+  22. output > filename은 압축 된 파일 이름, 
+      js/main.js 라고 작성하면 assets에 main.js가 생성되지만, js/[name].js라고 작성하면 entry에 있는 key값이(ex. main) 파일명(ex.main.js)으로 들어간다. 즉, entry개수만큼 파일이 생성됨
+  23. output > path는 압축 된 파일 저장 경로
       __dirname은 현재 프로젝트의 절대경로를 리턴 (C:\Users\jiyon\...\js_youtube)
       path.resolve()는 인수들을 합친 경로를 리턴한다. (C:\Users\jiyon\...\js_youtube\assets)
-  21. build를 시작하기 전에 output folder를 전부 비워준다.
+  24. build를 시작하기 전에 output folder를 전부 비워준다.
   */
 
   plugins: [ 
@@ -34,8 +38,8 @@ module.exports = {  // export default의 구문법
     })
   ],
   /*
-  32. 단순히 MiniCssExtractPlugin을 세팅하는 과정이다. 
-  33. npm run assets시, assets 폴더안에 css/styles.css가 생성된다.
+  36. 단순히 MiniCssExtractPlugin을 세팅하는 과정이다. 
+  37. npm run assets시, assets 폴더안에 css/styles.css가 생성된다.
   */         
 
   module: {  // webpack에서 사용할 module 정의
