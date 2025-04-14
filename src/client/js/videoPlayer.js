@@ -90,6 +90,15 @@ function mouseMoveOnVideo() {
 function mouseLeaveOnVideo() {
   timerRemoveShowing = setTimeout(removeShowing, 3000);
 };
+const endedVideo = () => {      // #11.1
+  const { id } = videoContainer.dataset;
+  fetch(`/api/videos/${id}/view`, {
+    method: "POST",
+  });
+};
+/*
+94. dataset은 html 태그에 정의된 data-xxx속성들을 불러온다.
+*/
 
 playBtn.addEventListener('click', clickPlayBtn)
 muteBtn.addEventListener('click', clickMuteBtn)
@@ -102,6 +111,7 @@ volume.addEventListener('input', changeVolume)
 fullScreenBtn.addEventListener("click", handleFullscreen);
 video.addEventListener("mousemove", mouseMoveOnVideo);
 video.addEventListener("mouseleave", mouseLeaveOnVideo);
+video.addEventListener("ended", endedVideo);
 /*
 93. loadedmetadata는 HTMLMediaElement의 이벤트 중 하나로, 비디오/오디오 파일이 로드 된 후에 콜백함수가 실행된다.
 

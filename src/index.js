@@ -6,6 +6,7 @@ import { localsMiddleware } from './middlewares';
 import rootRouter from './routers/rootRouter';
 import userRouter from './routers/userRouter';
 import videoRouter from './routers/videoRouter';
+import apiRouter from './routers/apiRouter';
 
 // express()로 서버(express) 생성 #3.0
 const app = express(); 
@@ -56,6 +57,7 @@ app.use('/assets',express.static('assets'))
 app.use('/',rootRouter)
 app.use('/users',userRouter)
 app.use('/videos',videoRouter)
+app.use('/api',apiRouter)
 /*
 54. express.static('uploads')는 우리 프로젝트의 uploads라는 폴더에 접근할 수 있도록 해준다. 
 */

@@ -147,6 +147,16 @@ export const postEdit = async (req, res) => {
 126. video.owner는 MongoDB objectId타입, _id는 string타입 #8.14
 */
 
+export const registerView = async (req, res) => {
+  const { id } = req.params;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.sendStatus(404);
+  }
+  video.meta.views += 1;
+  await video.save();
+  return res.sendStatus(200);
+};
 
 // 미들웨어는 router의 controller중 중간 역할을 하는 콜백함수로 req, res, next 파라미터를 갖고있다.
 // https://mongoosejs.com/docs/queries.html  >  mongoose Model의 query에 대한 공식문서.
