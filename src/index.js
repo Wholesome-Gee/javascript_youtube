@@ -2,6 +2,7 @@ import express from 'express';  // npm i express
 import morgan from 'morgan'; // npm i morgan
 import session from 'express-session'; // npm i express-session
 import MongoStore from 'connect-mongo'; // npm i connect-mongo
+import flash from 'express-flash'; // npm i express-flash
 import { localsMiddleware } from './middlewares';
 import rootRouter from './routers/rootRouter';
 import userRouter from './routers/userRouter';
@@ -34,6 +35,7 @@ app.use(session({
     maxAge: 86400000 * 1
   }
 }))
+app.use(flash())
 /*
 25. morgan은 server에 들어오는 HTTP 요청을 콘솔에 보여주는 라이브러리다. npm i morgan
 26. controller에서 req.body를 사용하기위한 middleware
@@ -45,6 +47,8 @@ app.use(session({
 31. session을 mongoDB 데이터베이스에 저장한다. (원래 session은 메모리에 저장됨)
 32. cookie는 서버가 브라우저측 부여하여 브라우저에 저장되는 작은 데이터조각이다. 
 33. cookie의 유효기간을 1일로 설정 (86400000ms는 1일이다.)
+38. flash()는 flash message를 보여주는 middleware이고, 
+    controller 에서 req.flash()가 가능하다. (middlewares.js에서 사용했음)
 */
 
 /* 현재 Session db에 있는 모든 session을 조회하는 방법

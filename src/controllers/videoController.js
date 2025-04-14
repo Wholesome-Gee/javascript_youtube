@@ -10,8 +10,7 @@ export const getHome = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.end()
-  }
-  
+  } 
 }
 /*
 7. async, await 사용 시 try,catch도 해주자 
@@ -64,7 +63,8 @@ export const getEdit = async (req, res) => {
   if(!video) {
     return res.status(404).render('404', { pageTitle: 'Video not found.' })
   }
-  if(String(video.owner) !== _id){ // 
+  if(String(video.owner) !== _id){
+    req.flash("error", "접근할 수 없는 페이지입니다.");
     return res.status(403).redirect('/')
   } 
   res.render('edit',{ pageTitle:`Editing`, video });
@@ -83,6 +83,7 @@ export const getRemove = async (req, res) => {
     return res.status(404).render('404', { pageTitle: 'Video not found.' })
   }
   if( String(video.owner) !== _id ) {
+    req.flash("error", "삭제 권한이 없습니다.");
     return res.status(403).redirect('/')
   }
   await Video.findByIdAndDelete(id);
@@ -114,6 +115,7 @@ export const postUpload = async(req, res) => {
     const user = await User.findById(_id)
     user.videos.push(newVideo._id)  
     user.save()
+    req.flash('success', '업로드 되었습니다.')
     res.redirect('/')   
   } catch (error) {
     res.status(400).render('upload',{ pageTitle: 'Upload Video', errorMessage: error._message });
@@ -135,12 +137,14 @@ export const postEdit = async (req, res) => {
     return res.status(404).render('404', { pageTitle: 'Video not found.' })
   }
   if(String(video.owner) !== _id){
+    req.flash("error", "수정 권한이 없습니다.");
     return res.status(403).redirect('/')
   } 
   await Video.findByIdAndUpdate(id, {
     title, description,
     hashtags: Video.formatHashtags(hashtags)
   })
+  req.flash('success', '수정 되었습니다.')
   return res.redirect(`/videos/${id}`)
 }
 /*

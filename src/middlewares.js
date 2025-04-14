@@ -16,14 +16,18 @@ export const loginOnlyMiddleware = (req,res,next) => {
   if(req.session.loggedIn) {
     next()
   } else {
+    req.flash('error','먼저 로그인 하세요.')
     return res.redirect('/login')
   }
 }
-
+/*
+req.flash('error','xxx')는 res.locals에 messages.error='xxx'를 생성한다.
+*/
 export const publicOnlyMiddleware = (req,res,next) => {
   if(!req.session.loggedIn){
     next()
   } else {
+    req.flash('error','접근이 불가능한 페이지입니다.')
     return res.redirect('/')
   }
 }

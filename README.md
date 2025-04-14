@@ -743,8 +743,14 @@ javascript의 최신 문법, scss같은 것들을 모든 브라우저가 이해�
 1.src/router/apiRouter.js 파일 생성
 
 
-
-
+## #15
+### #15.0
+npm i express-flash
+import flash from 'express-flash'
+app.use(flash())  // session을 기반으로 작동하기때문에 session 미들웨어보다 아래에 작성
+req.flash('error',"접근권한없음")
+req.flash('info',"비밀번호틀림")
+express-flash가 res.locals에 messages.error/info를 자동으로 등록해줌
 
 
 
