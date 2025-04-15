@@ -53,6 +53,7 @@ function loadedmetadataVideo() {
 }
 function timeUpdateVideo() {
   currentTime.innerText = formatTime(Math.floor(video.currentTime))
+  timeline.value = Math.floor(video.currentTime)
 }
 function changeTimeline(e) {
   video.currentTime = e.target.value

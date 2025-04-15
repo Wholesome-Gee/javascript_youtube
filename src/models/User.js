@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt"; // npm i bcrypt
-import mongoose from "mongoose"; // npm i mongoose
+import mongoose, { mongo } from "mongoose"; // npm i mongoose
 
 
 // mongoose 스키마 정의
@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema({
   password: String,
   name: { type: String, required: true },
   location: String,
+  comments: [
+    {
+      type:mongoose.Schema.Types.ObjectId,
+      ref:"Comment"
+    }
+  ],
   videos: [
     { 
       type: mongoose.Schema.Types.ObjectId,

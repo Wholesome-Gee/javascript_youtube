@@ -8,7 +8,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin') // npm i mini-cs
 module.exports = {  // export default의 구문법 
   entry: {
     main: "./src/client/js/main.js",
-    videoPlayer: "./src/client/js/videoPlayer.js"
+    videoPlayer: "./src/client/js/videoPlayer.js",
+    commentSection: "./src/client/js/commentSection.js"
   },
   mode: 'development',
   watch: true,

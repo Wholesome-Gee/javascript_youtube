@@ -15,7 +15,13 @@ const videoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     required: true,
     ref: "User" 
-  }
+  },
+  comments:[
+    {
+      type:mongoose.Schema.Types.ObjectId,
+      ref: "Comment"
+    }
+  ]
 })
 /*
 5. maxLength, minLength는 html의 input에서도 한번 더 작성해주는것이 좋다. trim은 공백을 제거해준다.

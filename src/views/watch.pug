@@ -26,7 +26,15 @@ block contents
     br
     a(href=`${video.id}/delete`) Delete Video &rarr;
   
+  if loggedIn
+    div.video__comments
+    form.video__comment-form#commentForm
+      textarea(cols="30", rows="10", placeholder="Write a nice commment...")
+      button Add Comment
+
 block scripts
   script(src="/assets/js/videoPlayer.js")
+  if loggedIn
+        script(src="/static/js/commentSection.js") 
 
   //- 4. <div data-xxx=video.id >를 js에서 div.dataset으로 불러올 수 있다.

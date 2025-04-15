@@ -26,6 +26,7 @@ app.set('views', process.cwd() + '/src/views')
 // 전역 middleware  (모든 request에 순차적으로 실행됨)
 app.use(morgan('dev'))  
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()) // client에서 server측에 fetch로부터 오는 json데이터를 보냈을때, object로 변환해주는 미들웨어
 app.use(session({
   secret: process.env.SESSION_SECRET, // 세션 보안키
   resave: false, 

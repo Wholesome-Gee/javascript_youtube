@@ -3,6 +3,7 @@ import app from './index.js'
 import './db'
 import './models/Video.js'
 import './models/User.js'
+import './models/Comment.js'
 
 let PORT = 4000
 

@@ -752,10 +752,26 @@ req.flash('error',"접근권한없음")
 req.flash('info',"비밀번호틀림")
 express-flash가 res.locals에 messages.error/info를 자동으로 등록해줌
 
-
-
-
-
+## #16
+### #16.1
+**✔️comments 기능 구현의 첫번째! Comment Schema 정의**
+### #16.2
+**✔️comments 기능 구현의 두번째! fontEnd 만들기**
+### #16.3
+**✔️comments 기능 구현의 세번째! fontEnd 에서 data를 서버로 보내기**
+### #16.4 
+**✔️comments 기능 구현의 세번째! fontEnd 에서 data를 서버로 보내기 2**
+  - fetch 함수를 사용 
+    - `fetch('url',{ method:'post', { headers: {"Content-Type":"application/json"}, body: JSON.stringify(object)}})`
+  - server가 fetch로 부터 온 json을 받고 다시 object로 변환하여 읽을 수 있도록 미들웨어 세팅
+    - app.use(express.json());
+  - object를 string으로 변환하려고하면 [Object object]라고 뜬다.
+  - 브라우저에서 서버로 object를 보내려고하면 [Object object]가 보내진다.
+  - json.stringify(object) = object를 json 문자열로 바꾸는 방법
+  - json.parse(jsonString) = json 문자열을 object로 바꾸는 방법
+  - js request를 통해(ex.fetch) 들어오는 text data를 server에게 이해시키는 방법 `express.text()`
+  - js request를 통해(ex.fetch) 들어오는 object data를 server에게 이해시키는 방법 `express.json()`
+  - html form action을 통해 들어오는 data를 server에게 이해시키는 방법 `express.json()`
 
 
 

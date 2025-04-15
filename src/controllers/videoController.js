@@ -162,6 +162,12 @@ export const registerView = async (req, res) => {
   return res.sendStatus(200);
 };
 
+export const createComment = (req, res) => {
+  console.log(req.params);
+  console.log(req.body);
+  return res.end();
+};
+
 // 미들웨어는 router의 controller중 중간 역할을 하는 콜백함수로 req, res, next 파라미터를 갖고있다.
 // https://mongoosejs.com/docs/queries.html  >  mongoose Model의 query에 대한 공식문서.
 
