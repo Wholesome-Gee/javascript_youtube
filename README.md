@@ -774,6 +774,8 @@ express-flash가 res.locals에 messages.error/info를 자동으로 등록해줌
   - html form action을 통해 들어오는 data를 server에게 이해시키는 방법 `express.json()`
 ### #16.5 
 **✔️comments 기능 구현의 네번째! database에 댓글 저장하기**
+### #16.6 
+**✔️comments 기능 구현의 다섯번째! database의 댓글들을 UI로 표시하기**
 
 
 

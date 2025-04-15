@@ -1,3 +1,4 @@
+import Comment from "../models/Comment";
 import User from "../models/User";
 import Video from "../models/Video";
 
@@ -43,10 +44,11 @@ export const getUpload = (req, res) => {
 
 export const getWatch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id).populate('owner') // populate는 덧붙히다 라는 뜻이 있다. #8.12영상을 참고
+  const video = await Video.findById(id).populate('owner').populate('comments') // populate는 덧붙히다 라는 뜻이 있다. #8.12영상을 참고
   if(!video) {
     return res.render('404', { pageTitle: 'Video not found.' })
   }
+  console.log(video)
   res.render('watch',{ pageTitle: video.title, video });
 }
 /*
@@ -175,8 +177,10 @@ export const createComment = async (req, res) => {
   const comment = await Comment.create({
     text,
     owner: user._id,
-    video: id
+    video: videoId
   })
+  video.comments.push(comment._id)
+  video.save()
   return res.sendStatus(201);
 };
 
