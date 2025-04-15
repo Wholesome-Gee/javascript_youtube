@@ -776,6 +776,8 @@ express-flash가 res.locals에 messages.error/info를 자동으로 등록해줌
 **✔️comments 기능 구현의 네번째! database에 댓글 저장하기**
 ### #16.6 
 **✔️comments 기능 구현의 다섯번째! database의 댓글들을 UI로 표시하기**
+### #16.7
+**✔️js에서 html의 요소를 추가하여 실시간 댓글창 구현하기**
 
 
 

@@ -48,7 +48,6 @@ export const getWatch = async (req, res) => {
   if(!video) {
     return res.render('404', { pageTitle: 'Video not found.' })
   }
-  console.log(video)
   res.render('watch',{ pageTitle: video.title, video });
 }
 /*
