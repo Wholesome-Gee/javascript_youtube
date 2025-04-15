@@ -18,6 +18,7 @@ const handleSubmit = (event) => {
     },
     body: text,
   });
+  textarea.value = ""
 };
 
 form.addEventListener("submit", handleSubmit);
