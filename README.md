@@ -344,8 +344,12 @@ mixin video(video)
     ```
 **✔️ mongoDB 설치하기**
 - chocolatey 설치
-- powershell 관리자모드 실행 후 `choco install mongodb` (이후 a+enter로 빠른설치)
-- powershell 관리자모드에서 `choco install mongosh` (이후 a+enter로 빠른설치) 
+  - poweshell 관리자모드 실행 후  
+    'Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))'
+- powershell 관리자모드 실행 후 `choco install mongodb-compass` (이후 a+enter로 빠른설치)
+- powershell 관리자모드에서 `choco install  mongodb-shell` (이후 a+enter로 빠른설치)
+- 윈도우 - '시스템 환경 변수 편집'검색 - '환경변수' - '시스템변수' - 'Path'편집 - '새로만들기' - 'C:\Program Files\MongoDB\Server\6.0\bin\'추가
+- C:\data\db폴더 생성
 - powershell에 `mongosh` 입력 후 Connecting to: 다음에 나오는 `mongodb://db주소/` 까지 복사
 - 프로젝트 콘솔에 `npm i mongoose`
 - src/db.js 생성
